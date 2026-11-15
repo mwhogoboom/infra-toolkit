@@ -1,0 +1,17 @@
+# Script output
+*.csv
+*.json
+!tests/fixtures/*
+ADHygiene-*/
+PatchRun-*
+
+# Local config that may hold server names or webhooks
+servers.txt
+endpoints.txt
+*.local.ps1
+.env
+
+# Editors / OS
+.vscode/
+.DS_Store
+Thumbs.db

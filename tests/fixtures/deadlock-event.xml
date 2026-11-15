@@ -1,0 +1,44 @@
+<event name="xml_deadlock_report" package="sqlserver" timestamp="2026-10-28T14:05:12.345Z">
+  <data name="xml_report">
+    <type name="xml" package="package0" />
+    <value>
+      <deadlock>
+        <victim-list>
+          <victimProcess id="process1a2b" />
+        </victim-list>
+        <process-list>
+          <process id="process1a2b" taskpriority="0" logused="0" waitresource="KEY: 7:72057594043695104 (8194443284a0)" waittime="4012" lockMode="S" spid="87" isolationlevel="read committed (2)" clientapp="Microsoft Office" hostname="WS-ANALYST01" loginname="CONTOSO\analyst">
+            <executionStack />
+            <inputbuf>
+SELECT o.OrderID, o.Total
+FROM   dbo.Orders o
+WHERE  o.Region = @p1
+            </inputbuf>
+          </process>
+          <process id="process3c4d" taskpriority="0" logused="1024" waitresource="KEY: 7:72057594043760640 (1a2b3c4d5e6f)" waittime="3998" lockMode="X" spid="112" isolationlevel="read committed (2)" clientapp="ImportJob" hostname="APP01" loginname="CONTOSO\svc_import">
+            <executionStack />
+            <inputbuf>UPDATE dbo.OrderLines SET Qty = @q WHERE OrderID = @id</inputbuf>
+          </process>
+        </process-list>
+        <resource-list>
+          <keylock hobtid="72057594043695104" dbid="7" objectname="Sales.dbo.Orders" indexname="PK_Orders" id="lock1" mode="X" associatedObjectId="72057594043695104">
+            <owner-list>
+              <owner id="process3c4d" mode="X" />
+            </owner-list>
+            <waiter-list>
+              <waiter id="process1a2b" mode="S" requestType="wait" />
+            </waiter-list>
+          </keylock>
+          <keylock hobtid="72057594043760640" dbid="7" objectname="Sales.dbo.OrderLines" indexname="IX_OrderLines_OrderID" id="lock2" mode="S" associatedObjectId="72057594043760640">
+            <owner-list>
+              <owner id="process1a2b" mode="S" />
+            </owner-list>
+            <waiter-list>
+              <waiter id="process3c4d" mode="X" requestType="wait" />
+            </waiter-list>
+          </keylock>
+        </resource-list>
+      </deadlock>
+    </value>
+  </data>
+</event>
