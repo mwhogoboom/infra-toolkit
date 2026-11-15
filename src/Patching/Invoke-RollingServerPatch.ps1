@@ -131,7 +131,7 @@ function Invoke-PatchOneServer {
         } while ($state -eq 'Running' -and (Get-Date) -lt $deadline)
         if ($state -eq 'Running') { throw "Update job still running after $InstallTimeoutMinutes minutes." }
 
-        $lines = Invoke-Command -ComputerName $Server -ScriptBlock { param($p) if (Test-Path $p) { Get-Content $p } } -ArgumentList $log
+        $lines = Invoke-Command -ComputerName $Server -ScriptBlock { if (Test-Path $using:log) { Get-Content $using:log } }
         $r.UpdatesInstalled = Get-InstalledUpdateCount -LogLine $lines
 
         # 2) Reboot only when Windows says it needs one.
@@ -149,13 +149,14 @@ function Invoke-PatchOneServer {
 
         # 3) Verify critical services, one start attempt each.
         if ($CriticalService.Count -gt 0) {
-            $down = Invoke-Command -ComputerName $Server -ArgumentList (, $CriticalService) -ScriptBlock {
-                param($names)
-                foreach ($n in $names) {
-                    $svc = Get-Service -Name $n -ErrorAction SilentlyContinue
+            $down = Invoke-Command -ComputerName $Server -ScriptBlock {
+                $using:CriticalService | ForEach-Object {
+                    $name = $_
+                    $svc = Get-Service -Name $name -ErrorAction SilentlyContinue
                     if ($svc -and $svc.Status -ne 'Running') {
-                        try { Start-Service $n -ErrorAction Stop; Start-Sleep -Seconds 10; $svc.Refresh() } catch { Write-Verbose "Could not start ${n}: $($_.Exception.Message)" }
-                        if ($svc.Status -ne 'Running') { $n }
+                        try { Start-Service -Name $name -ErrorAction Stop; Start-Sleep -Seconds 10; $svc.Refresh() }
+                        catch { Write-Verbose "Could not start ${name}: $($_.Exception.Message)" }
+                        if ($svc.Status -ne 'Running') { $name }
                     }
                 }
             }

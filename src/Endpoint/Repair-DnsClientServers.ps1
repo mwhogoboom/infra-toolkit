@@ -105,6 +105,8 @@ function Register-RepairTask {
 }
 
 function Invoke-DnsClientRepair {
+    [CmdletBinding(SupportsShouldProcess)]
+    param()
     $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
         [Security.Principal.WindowsBuiltInRole]::Administrator)
     if (-not $isAdmin -and -not $WhatIfPreference) { throw 'Run this elevated (or as SYSTEM).' }
