@@ -4,7 +4,7 @@ PowerShell tools for running a Windows infrastructure with a small team: monitor
 
 These are generalized versions of patterns I use running Windows infrastructure for a multi-site organization. Nothing here contains real server names, addresses, or credentials.
 
-[![CI](https://github.com/mwhogoboom/infra-toolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/mwhogoboom/infra-toolkit/actions/workflows/ci.yml)
+[![CI](https://github.com/mwhogoboom/infra-toolkit/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/mwhogoboom/infra-toolkit/actions/workflows/ci.yml)
 
 ## Tools
 
